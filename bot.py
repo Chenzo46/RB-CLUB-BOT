@@ -45,6 +45,7 @@ async def parse_game_command(comm:str, is_officer:bool, mess:Message):
     elif "join" in comm and current_meet.meet_started:
         await handle_join(mess, comm)
     elif comm == "end" and current_meet.meet_started and is_officer:
+        await mess.channel.send("Meet ended!")
         current_meet.end_meet()
     elif "assign" in comm and current_meet.meet_started and is_officer:
         current_meet.assign_players_singles()
