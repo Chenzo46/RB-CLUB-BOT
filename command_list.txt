@@ -1,4 +1,4 @@
-!create-type
+!create
 !join-code
 !end
 !assign

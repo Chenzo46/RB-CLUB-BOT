@@ -64,6 +64,10 @@ class Meet:
         self.matches_assigned = True
         assigned_players:List[List[Player]] = [[] for idx in range(self.courts)]
         self.singles_matches.clear()
+        
+        #handle player count of 1
+
+        #handle a player count of 3
 
         # Assign a court to each player
         court:int = 0
@@ -77,18 +81,21 @@ class Meet:
             except IndexError:
                 # assign odd one out to previous court
                 assigned_players[(court-1)%4].append(self.players[idx])
-                self.players[idx].court = court%4
+                self.players[idx].court = (court-1)%4
             
             court+=1
 
         # Go through each court and make matches (account for odd # of players)
         for idx in range(self.courts):
+            if(len(assigned_players[idx]) < 2):
+                break
             for jdx in range(0,len(assigned_players[idx]),2):
                 try:
                     self.singles_matches.append(MatchUp(assigned_players[idx][jdx], assigned_players[idx][jdx+1], idx))
                 except IndexError:
                     self.singles_matches.append(MatchUp(assigned_players[idx][0], assigned_players[idx][jdx], idx))
-        
+            
+
     def assign_players_doubles(self):
         self.is_singles = False
 
@@ -118,7 +125,7 @@ class Meet:
             if len(self.players) > 0:
                 info += "Player List:\n"
                 for idx in range(len(self.players)):
-                    info+=f'{idx+1}. {self.players[idx].nickname}\n'
+                    info+=f'\t{idx+1}: {self.players[idx].nickname}\n'
             else:
                 info += "No players to Display"
                 return info
@@ -128,7 +135,7 @@ class Meet:
                 info += "Singles Matches:\n"
 
                 for idx in range(len(self.singles_matches)):
-                    info += f'\tCourt {self.singles_matches[idx].court+1}: {self.singles_matches[idx].player_one.nickname} vs {self.singles_matches[idx].player_two.nickname}\n'
+                    info += f'\tCourt {self.singles_matches[idx].court+1}: {self.singles_matches[idx].player_one.nickname} VS {self.singles_matches[idx].player_two.nickname}\n'
             elif len(self.doubles_matches) > 0:
                 info += "Doubles Matches:\n"
 
