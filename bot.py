@@ -1,11 +1,11 @@
 import os
 from typing import List
 from discord import Intents, Client, Message, Role
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 from Racquetball import Meet
 
 # GET BOT TOKEN (SAFELY)
-load_dotenv()
+#load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
 # SET UP BOT INTENTS
