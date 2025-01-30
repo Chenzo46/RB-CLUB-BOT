@@ -44,6 +44,7 @@ async def parse_game_command(comm:str, is_officer:bool, mess:Message):
         await mess.author.send(f'You cretaed a meet instance, the code to join is {current_meet.join_code}')
     elif "join" in comm and current_meet.meet_started:
         await handle_join(mess, comm)
+        await mess.delete()
     elif comm == "end" and current_meet.meet_started and is_officer:
         await mess.channel.send("Meet ended!")
         current_meet.end_meet()
