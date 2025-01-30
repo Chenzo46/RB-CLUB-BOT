@@ -57,6 +57,7 @@ async def parse_game_command(comm:str, is_officer:bool, mess:Message):
         new_player_name = comm.split("-")[1]
         current_meet.add_player(new_player_name, new_player_name)
         await mess.channel.send(f"Player \"{new_player_name}\" added Manually!")
+        await mess.delete()
     elif comm == "show":        
         await mess.channel.send(current_meet)
     elif comm == "help":
