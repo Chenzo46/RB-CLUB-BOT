@@ -53,7 +53,7 @@ class Meet:
         n_player:Player = Player(name, nickname)
         self.players.append(n_player)
 
-    def in_meet(self, name:str):
+    def in_meet(self, name:str)->bool:
         for idx in range(len(self.players)):
             if self.players[idx].name == name:
                 return True
@@ -62,25 +62,32 @@ class Meet:
     def assign_players_singles(self):
         self.is_singles = True
         self.matches_assigned = True
-        assigned_players:List[List[Player]] = [[]*self.courts]
+        assigned_players:List[List[Player]] = [[] for idx in range(self.courts)]
+        self.singles_matches.clear()
 
         # Assign a court to each player
-        for idx in range(len(self.players)):
+        court:int = 0
+        for idx in range(0,len(self.players),2):
             try:
-                assigned_players[(idx%4)].append(self.players[idx])
+                assigned_players[(court%4)].append(self.players[idx])
+                assigned_players[(court%4)].append(self.players[idx+1])
+
+                self.players[idx].court = court%4
+                self.players[idx+1].court = court%4
             except IndexError:
-                print(f"Code exited with index of {idx%4} and court size {self.courts}")
-                return
-            self.players[idx].court = (idx % 4)
+                # assign odd one out to previous court
+                assigned_players[(court-1)%4].append(self.players[idx])
+                self.players[idx].court = court%4
+            
+            court+=1
 
         # Go through each court and make matches (account for odd # of players)
         for idx in range(self.courts):
-            for jdx in range(len(0,assigned_players[idx],2)):
+            for jdx in range(0,len(assigned_players[idx]),2):
                 try:
                     self.singles_matches.append(MatchUp(assigned_players[idx][jdx], assigned_players[idx][jdx+1], idx))
                 except IndexError:
-                    print("Only one person assigned to court")
-
+                    self.singles_matches.append(MatchUp(assigned_players[idx][0], assigned_players[idx][jdx], idx))
         
     def assign_players_doubles(self):
         self.is_singles = False
@@ -97,10 +104,11 @@ class Meet:
     def end_meet(self):
         self.join_code = ""
         self.meet_started = False
-        self.players = []
-        self.singles_matches = []
-        self.doubles_matches = []
+        self.players.clear()
+        self.singles_matches.clear()
+        self.doubles_matches.clear()
         self.matches_assigned = False
+        self.is_singles = False
 
     def __str__(self)->str:
         if self.meet_started:
@@ -120,7 +128,7 @@ class Meet:
                 info += "Singles Matches:\n"
 
                 for idx in range(len(self.singles_matches)):
-                    info += f'\tCourt {self.singles_matches[idx].court+1} {self.singles_matches[idx].player_one.nickname} vs {self.singles_matches[idx].player_two.nickname}\n'
+                    info += f'\tCourt {self.singles_matches[idx].court+1}: {self.singles_matches[idx].player_one.nickname} vs {self.singles_matches[idx].player_two.nickname}\n'
             elif len(self.doubles_matches) > 0:
                 info += "Doubles Matches:\n"
 

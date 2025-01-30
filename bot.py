@@ -38,24 +38,24 @@ def has_role(role:str, role_list:List[Role])->bool:
     return False
 
 async def parse_game_command(comm:str, is_officer:bool, mess:Message):
-    if comm == "create_meet" and not current_meet.meet_started and is_officer:
+    if comm == "create" and not current_meet.meet_started and is_officer:
         current_meet.start_meet()
         await mess.channel.send("Meet Instance Created!")
         await mess.author.send(f'You cretaed a meet instance, the code to join is {current_meet.join_code}')
-    elif "join_meet" in comm and current_meet.meet_started:
+    elif "join" in comm and current_meet.meet_started:
         await handle_join(mess, comm)
-    elif comm == "end_meet" and current_meet.meet_started and is_officer:
+    elif comm == "end" and current_meet.meet_started and is_officer:
         current_meet.end_meet()
-    elif "assign_players" in comm and current_meet.meet_started and is_officer:
+    elif "assign" in comm and current_meet.meet_started and is_officer:
         current_meet.assign_players_singles()
         await mess.channel.send("Singles Matches assigned!")
-    elif comm == "shuffle_players" and current_meet.meet_started and is_officer:
+    elif comm == "shuffle" and current_meet.meet_started and is_officer:
         pass
-    elif "manual_add" in comm and current_meet.meet_started and is_officer:
+    elif "manual" in comm and current_meet.meet_started and is_officer:
         new_player_name = comm.split("-")[1]
         current_meet.add_player(new_player_name, new_player_name)
         await mess.channel.send(f"Player \"{new_player_name}\" added Manually!")
-    elif comm == "show_meet_state":        
+    elif comm == "show":        
         await mess.channel.send(current_meet)
     elif comm == "help":
         await show_commands(mess)
