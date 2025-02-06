@@ -23,7 +23,7 @@ current_meet:Meet = Meet(4)
 @client.event
 async def on_message(message: Message):
     # Base case for checking messages
-    if message.author == client.user or message.channel.name != "game-assignment" or message.content[0] != '!':
+    if message.author == client.user or message.channel.name not in "game-assignment test" or message.content[0] != '!':
         return
     
     command = message.content[1:len(message.content)]
@@ -52,7 +52,8 @@ async def parse_game_command(comm:str, is_officer:bool, mess:Message):
         current_meet.assign_players_singles()
         await mess.channel.send("Singles Matches assigned!")
     elif comm == "shuffle" and current_meet.meet_started and is_officer:
-        pass
+        current_meet.shuffle_players()
+        await mess.channel.send("Players shuffled!")
     elif "manual" in comm and current_meet.meet_started and is_officer:
         new_player_name = comm.split("-")[1]
         current_meet.add_player(new_player_name, new_player_name)
@@ -62,8 +63,19 @@ async def parse_game_command(comm:str, is_officer:bool, mess:Message):
         await mess.channel.send(current_meet)
     elif comm == "help":
         await show_commands(mess)
+    elif "courts" in comm:
+        await change_court_count(comm, mess)
     else:
         print("Command not recognized")
+
+async def change_court_count(comm:str, mess:Message):
+    try:
+        court_count = int(comm.split('-')[1])
+        current_meet.courts = court_count
+        await mess.channel.send(f"Court count changed to {court_count}")
+    except:
+        print("Invalid Court Input")
+        await mess.channel.send("Invalid Command Input")
 
 async def handle_join(mess:Message, comm:str):
     join_code = comm.split('-')[1]
