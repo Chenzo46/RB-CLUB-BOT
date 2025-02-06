@@ -1,5 +1,5 @@
 !create
-!courts-count
+!courts-count (4 is the defualt)
 !join-code
 !end
 !assign
